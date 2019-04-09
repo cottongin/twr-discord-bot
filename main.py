@@ -35,7 +35,5 @@ async def on_ready():
     await bot.change_presence(activity=activity)
     print(f'Successfully logged in and booted...!')
 
-#keep_alive()
 token = os.getenv("BOT_SECRET")
-#print(token)
 bot.run(token, bot=True, reconnect=True)
