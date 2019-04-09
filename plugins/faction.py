@@ -90,8 +90,25 @@ class Faction(commands.Cog):
         self.db.set("factions", tmp)
         await ctx.send("Done!")
 
+    @commands.command(name='unlink')
+    @commands.has_permissions(administrator=True)
+    async def unlinkguild(self, ctx, *, text: str):
+        """Links a Discord <guild> to a Torn API <key>"""
+        if len(text.split()) > 1:
+            await ctx.send("Invalid format! (guild/faction key)")
+            return
+        guild = text.split()[0]
+        #key = text.split()[1]
+        chk = self.factions.pop(guild, None)
+        if not chk:
+            await ctx.send("Provided guild/faction not in database!")
+            return
+        tmp = pickle.dumps(self.factions, protocol=pickle.HIGHEST_PROTOCOL)
+        self.db.set("factions", tmp)
+        await ctx.send("Done!")
 
-    @commands.command(aliases=['g'])
+
+    @commands.command(aliases=['g'], hidden=True)
     async def guild(self, ctx):
         """Returns guild"""
         await ctx.send(ctx.guild.id)
@@ -103,7 +120,7 @@ class Faction(commands.Cog):
         if guild_id not in self.factions:
             await ctx.send("No Torn API key has been assigned for this Discord server or provided faction")
             return
-        print(self.factions[guild_id])
+        #print(self.factions[guild_id])
         url = "https://api.torn.com/faction/?selections=basic,stats&key={}".format(self.factions[guild_id])
         try:
             data = requests.get(url).json()
@@ -146,9 +163,14 @@ class Faction(commands.Cog):
         await ctx.send(reply)
 
     @commands.command(aliases=['c'])
-    async def chain(self, ctx):
+    async def chain(self, ctx, *, faction: str=""):
         """Checks for a current chain"""
-        url = "https://api.torn.com/faction/?selections=chain&key={}".format(self.key)
+        guild_id = faction.upper() or str(ctx.guild.id)
+        if guild_id not in self.factions:
+            await ctx.send("No Torn API key has been assigned for this Discord server or provided faction")
+            return
+        key = self.factions[guild_id]
+        url = "https://api.torn.com/faction/?selections=chain&key={}".format(key)
         try:
             data = requests.get(url).json()
         except:
@@ -280,10 +302,15 @@ class Faction(commands.Cog):
     #     await ctx.send(reply)
 
     @commands.command(aliases=['bc'])
-    async def bestchain(self, ctx):
+    async def bestchain(self, ctx, *, faction: str=""):
         """Gets our best chain"""
-        url = "https://api.torn.com/faction/?selections=basic,chains,attacksfull&key={}".format(self.key)
-        print(url)
+        guild_id = faction.upper() or str(ctx.guild.id)
+        if guild_id not in self.factions:
+            await ctx.send("No Torn API key has been assigned for this Discord server or provided faction")
+            return
+        key = self.factions[guild_id]
+        url = "https://api.torn.com/faction/?selections=basic,chains,attacksfull&key={}".format(key)
+        #print(url)
         try:
             data = requests.get(url).json()
         except:
@@ -346,7 +373,7 @@ class Faction(commands.Cog):
     @commands.guild_only()
     async def calendar(self, ctx, *args):
         """Fetches next event from TWR Faction calendar"""
-        print(args)
+        #print(args)
         number = 5
         notify = ''
         for arg in args:
