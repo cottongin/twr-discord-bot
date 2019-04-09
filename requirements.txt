@@ -4,3 +4,4 @@ aiohttp
 pendulum
 flask
 jicson
+motor

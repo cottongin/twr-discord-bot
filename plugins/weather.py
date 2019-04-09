@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 import os
 import requests, pendulum, pickle
+import motor.motor_asyncio
 from plugins.helpers import _helperFuncs as utils
 from urllib.parse import quote_plus
 
@@ -13,11 +14,14 @@ class Weather(commands.Cog):
         self.bot = bot
         self.key = os.getenv("WEATHER_KEY")
         self.geo = os.getenv("GEO_KEY")
+        self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("MONGODB_URI"))
+        self.db = self.client['db']
         try:
             self.cached_locations, self.user_locations = self._load_cache()
         except:
             self.cached_locations = {}
             self.user_locations = {}
+        print(self.cached_locations, self.user_locations)
 
     @commands.command(aliases=['c2f'])
     async def ctof(self, ctx, *, temp: float):
@@ -271,20 +275,24 @@ class Weather(commands.Cog):
         name = data['results'][0]['formatted']
         return lat, lon, name
 
-    def _load_cache(self):
-        with open('weather_locations.db', 'rb') as handle:
-            b = pickle.load(handle)
-        with open('user_cache.db', 'rb') as handle:
-            c = pickle.load(handle)
+    async def _load_cache(self):
+        b = await self.db.user_cache.find_one()
+        c = await self.db.weather_locations.find_one()
         return b,c
 
-    def _dump_cache(self):
-        with open('weather_locations.db', 'wb') as handle:
-            pickle.dump(self.cached_locations, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    async def _dump_cache(self):
+        c = await self.db.weather_locations.find_one()
+        if c:
+            await self.db.weather_locations.replace_one({'_id': c['_id']}, self.cached_locations)
+        else:
+            await self.db.weather_locations.insert_one(self.cached_locations)
 
-    def _dump_user_cache(self):
-        with open('user_cache.db', 'wb') as handle:
-            pickle.dump(self.user_locations, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    async def _dump_user_cache(self):
+        c = await self.db.user_cache.find_one()
+        if c:
+            await self.db.user_cache.replace_one({'_id': c['_id']}, self.user_locations)
+        else:
+            await self.db.user_cache.insert_one(self.user_locations)
 
 def setup(bot):
     bot.add_cog(Weather(bot))
