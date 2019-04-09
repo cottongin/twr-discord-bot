@@ -76,7 +76,7 @@ class Faction(commands.Cog):
 
     #     await ctx.send(reply)
 
-    @commands.command(name=['link'])
+    @commands.command(name='link')
     @commands.has_permissions(administrator=True)
     async def linkguild(self, ctx, *, guild: str, key: str):
         """Links a Discord <guild> to a Torn API <key>"""
