@@ -6,3 +6,4 @@ flask
 jicson
 motor
 redis
+python-dotenv
