@@ -10,7 +10,7 @@ class Misc(commands.Cog):
     @commands.guild_only()
     async def source(self, ctx):
         """Replies with link to my source code"""
-        await ctx.send("See my source code here: https://repl.it/@cottongintonic/TWRBot")
+        await ctx.send("See my source code here: https://github.com/cottongin/twr-discord-bot")
 
     @commands.command()
     async def flip(self, ctx, *, times: int=1):
