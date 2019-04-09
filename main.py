@@ -3,8 +3,6 @@ from discord.ext import commands
 
 import os, sys, traceback
 
-from keep_alive import keep_alive
-
 """Based on https://gist.github.com/EvieePy/d78c061a4798ae81be9825468fe146be"""
 
 def get_prefix(bot, message):
