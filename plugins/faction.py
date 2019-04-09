@@ -78,9 +78,13 @@ class Faction(commands.Cog):
 
     @commands.command(name='link')
     @commands.has_permissions(administrator=True)
-    async def linkguild(self, ctx, *, guild: str, key: str):
+    async def linkguild(self, ctx, *, text: str):
         """Links a Discord <guild> to a Torn API <key>"""
-        print(guild, key)
+        if len(text.split()) > 2:
+            await ctx.send("Invalid format! (guild/faction key)")
+            return
+        guild = text.split()[0]
+        key = text.split()[1]
         self.factions[guild] = key
         tmp = pickle.dumps(self.factions, protocol=pickle.HIGHEST_PROTOCOL)
         self.db.set("factions", tmp)
