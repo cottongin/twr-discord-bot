@@ -19,7 +19,7 @@ class Weather(commands.Cog):
         self.db = self.client['db']
         #print(self.db)
         try:
-            self.cached_locations, self.user_locations = await self._load_cache()
+            self.cached_locations, self.user_locations = self._load_cache()
         except:
             self.cached_locations = {}
             self.user_locations = {}
@@ -277,7 +277,7 @@ class Weather(commands.Cog):
         name = data['results'][0]['formatted']
         return lat, lon, name
 
-    async def _load_cache(self):
+    def _load_cache(self):
         b = await self.db.user_cache.find_one()
         c = await self.db.weather_locations.find_one()
         return b,c
