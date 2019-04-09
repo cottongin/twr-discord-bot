@@ -3,7 +3,7 @@ import discord
 # import aiohttp
 from discord.ext import commands
 import os, pickle
-import requests, pendulum
+import requests, pendulum, redis
 import jicson, json
 from plugins.helpers import _helperFuncs
 
@@ -12,19 +12,25 @@ class Faction(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.key = os.getenv("TORN_KEY")
+        self.db = redis.from_url(os.environ.get("REDIS_URL"))
         try:
-            self.nextchain = self._load_chain_cache()
+            tmp = self.db.get('factions')
+            self.factions = pickle.loads(tmp)
         except:
-            self.nextchain = []
+            self.factions = {}
+    #     try:
+    #         self.nextchain = self._load_chain_cache()
+    #     except:
+    #         self.nextchain = []
 
-    def _load_chain_cache(self):
-        with open('scheduled_chains.db', 'rb') as handle:
-            b = pickle.load(handle)
-        return b
+    # def _load_chain_cache(self):
+    #     with open('scheduled_chains.db', 'rb') as handle:
+    #         b = pickle.load(handle)
+    #     return b
 
-    def _dump_chain_cache(self):
-        with open('scheduled_chains.db', 'wb') as handle:
-            pickle.dump(self.nextchain, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # def _dump_chain_cache(self):
+    #     with open('scheduled_chains.db', 'wb') as handle:
+    #         pickle.dump(self.nextchain, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     # @commands.command()
     # @commands.guild_only()
@@ -70,15 +76,29 @@ class Faction(commands.Cog):
 
     #     await ctx.send(reply)
 
+    @commands.command(name=['link'])
+    @commands.has_permissions(administrator=True)
+    async def linkguild(self, ctx, *, guild: str, key: str):
+        """Links a Discord <guild> to a Torn API <key>"""
+        self.factions[guild] = key
+        tmp = pickle.dumps(self.factions, protocol=pickle.HIGHEST_PROTOCOL)
+        self.db.set("factions", tmp)
+
+
     @commands.command(aliases=['g'])
     async def guild(self, ctx):
         """Returns guild"""
         await ctx.send(ctx.guild.id)
 
     @commands.command(aliases=['info'])
-    async def factioninfo(self, ctx):
+    async def factioninfo(self, ctx, *, faction: str=""):
         """Returns basic information on the faction"""
-        url = "https://api.torn.com/faction/?selections=basic,stats&key={}".format(self.key)
+        guild_id = faction or str(ctx.guild.id)
+        if guild_id not in self.factions:
+            await ctx.send("No Torn API key has been assigned for this Discord server or provided faction")
+            return
+        
+        url = "https://api.torn.com/faction/?selections=basic,stats&key={}".format(self.factions[guild_id])
         try:
             data = requests.get(url).json()
         except:
