@@ -99,11 +99,11 @@ class Faction(commands.Cog):
     @commands.command(aliases=['info'])
     async def factioninfo(self, ctx, *, faction: str=""):
         """Returns basic information on the faction"""
-        guild_id = faction or str(ctx.guild.id)
+        guild_id = faction.upper() or str(ctx.guild.id)
         if guild_id not in self.factions:
             await ctx.send("No Torn API key has been assigned for this Discord server or provided faction")
             return
-        
+        print(self.factions[guild_id])
         url = "https://api.torn.com/faction/?selections=basic,stats&key={}".format(self.factions[guild_id])
         try:
             data = requests.get(url).json()
