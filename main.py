@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 
 import os, sys, traceback
+from dotenv import load_dotenv
+load_dotenv()
 
 """Based on https://gist.github.com/EvieePy/d78c061a4798ae81be9825468fe146be"""
 
@@ -36,4 +38,5 @@ async def on_ready():
     print(f'Successfully logged in and booted...!')
 
 token = os.getenv("BOT_SECRET")
+#print(token)
 bot.run(token, bot=True, reconnect=True)

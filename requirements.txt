@@ -5,3 +5,4 @@ pendulum
 flask
 jicson
 motor
+redis
