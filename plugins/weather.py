@@ -20,8 +20,6 @@ class Weather(commands.Cog):
         except:
             self.cached_locations = {}
             self.user_locations = {}
-        print("\n\n\n\n\n\n\n\n")
-        print(self.cached_locations, "\n", self.user_locations)
 
     @commands.command(aliases=['c2f'])
     async def ctof(self, ctx, *, temp: float):
