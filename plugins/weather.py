@@ -17,9 +17,9 @@ class Weather(commands.Cog):
         #print(os.getenv("MONGODB_URI"))
         self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("MONGODB_URI"))
         self.db = self.client['db']
-        print(self.db)
+        #print(self.db)
         try:
-            self.cached_locations, self.user_locations = self._load_cache()
+            self.cached_locations, self.user_locations = await self._load_cache()
         except:
             self.cached_locations = {}
             self.user_locations = {}
