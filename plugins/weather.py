@@ -100,7 +100,7 @@ class Weather(commands.Cog):
                 await ctx.send("Error finding that location :(")
                 return
             self.cached_locations[location] = (lat, lon, name)
-            self._dump_cache()
+            await self._dump_cache()
         else:
             #print("Weather: location cached, using cache")
             lat, lon, name = self.cached_locations[location]
@@ -240,7 +240,7 @@ class Weather(commands.Cog):
         await ctx.send(embed=byline2)
         #if caller in self.user_locations:
         self.user_locations[caller] = location
-        self._dump_user_cache()
+        await self._dump_user_cache()
         #await ctx.send(embed=byline1)
         #await ctx.send(embed=byline2)
 
