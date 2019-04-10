@@ -2,8 +2,6 @@ discord.py
 requests
 aiohttp
 pendulum
-flask
 jicson
-motor
 redis
 python-dotenv
