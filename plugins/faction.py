@@ -1,6 +1,5 @@
 # import asyncio
 import discord
-# import aiohttp
 from discord.ext import commands
 import os, pickle
 import requests, pendulum, redis
