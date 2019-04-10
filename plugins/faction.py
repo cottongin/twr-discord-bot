@@ -119,7 +119,7 @@ class Faction(commands.Cog):
         if guild_id not in self.factions:
             await ctx.send("No Torn API key has been assigned for this Discord server or provided faction")
             return
-        #print(self.factions[guild_id])
+        print(self.factions[guild_id])
         url = "https://api.torn.com/faction/?selections=basic,stats&key={}".format(self.factions[guild_id])
         try:
             data = requests.get(url).json()
