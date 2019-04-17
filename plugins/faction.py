@@ -130,7 +130,8 @@ class Faction(commands.Cog):
             await ctx.send("Error fetching data")
             return
 
-        #print(data)
+        print(url)
+        print(data)
 
         name = "{}".format(_helperFuncs.bold(data['name']))
         members = "**Members:** {}".format(len(data['members']))
