@@ -89,6 +89,7 @@ class Faction(commands.Cog):
         self.factions[guild] = key
         tmp = pickle.dumps(self.factions, protocol=pickle.HIGHEST_PROTOCOL)
         self.db.set("factions", tmp)
+        print(self.factions)
         await ctx.send("Done!")
 
     @commands.command(name='unlink')
