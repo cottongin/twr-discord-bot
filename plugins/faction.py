@@ -348,7 +348,10 @@ class Faction(commands.Cog):
         leaders = {}
         for item in sorted_by_value[:5]:
             #print(data['members'][str(item[0])]['name'])
-            leaders[data['members'][str(item[0])]['name']] = item[1]
+            try:
+                leaders[data['members'][str(item[0])]['name']] = item[1]
+            except:
+                continue
         padding = 0
         for item in leaders:
             if len(item) > padding:
