@@ -361,7 +361,7 @@ class Faction(commands.Cog):
         for k,v in leaders.items():
             strings.append("{:{width}}(x{})\t{:+7.2f} respect".format(k,v['count'],v['respect'],width=padding))
         if strings:
-            leader_string = "\n**Top 5 Attackers:**\n```{}```".format(
+            leader_string = "\n**Top Attackers:**\n```{}```".format(
                 "\n".join(strings)
             )
         start = pendulum.from_timestamp(start)
