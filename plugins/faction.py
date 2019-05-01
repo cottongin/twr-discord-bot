@@ -313,7 +313,7 @@ class Faction(commands.Cog):
             return
         key = self.factions[guild_id]
         url = "https://api.torn.com/faction/?selections=basic,chains,attacksfull&key={}".format(key)
-        #print(url)
+        print(url)
         try:
             data = requests.get(url).json()
         except:
